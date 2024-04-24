@@ -5,34 +5,45 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
+import Modal from "react-bootstrap/Modal";
 
 function WelcomePage() {
+    const [itemToEdit, setItemToEdit] = useState('');
   const priceRef = useRef(null);
   const descriptionRef = useRef(null);
   const categoryRef = useRef(null);
+  const editPriceRef = useRef(null)
+  const editDescriptionRef = useRef(null);
+  const editCategoryRef = useRef(null);
+  const [editDescription,setEditDescription] = useState('');
+  const [editPrice,setEditPrice] = useState('');
+  const [editCategory,setEditCategory] = useState('');
   const [items, setItems] = useState([]);
+  const [modal, setModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-        try {
-          const response = await axios.get('https://trackerappauthentication-default-rtdb.firebaseio.com/items.json');
-          const data = response.data;
-          const itemsArray = [];
-    
-          for (let key in data) {
-            itemsArray.push({ ...data[key], id: key });
-          }
-    
-          setItems(itemsArray);
-          console.log(itemsArray)   
-        } catch (error) {
-          console.error('Error fetching data:', error);
+      try {
+        const response = await axios.get(
+          "https://trackerappauthentication-default-rtdb.firebaseio.com/items.json"
+        );
+        const data = response.data;
+        const itemsArray = [];
+
+        for (let key in data) {
+          itemsArray.push({ ...data[key], id: key });
         }
-      };
-    
-      fetchData();
-  },[])
+
+        setItems(itemsArray);
+        console.log(itemsArray);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   const verifyEmail = () => {
     const token = localStorage.getItem("token");
 
@@ -85,38 +96,72 @@ function WelcomePage() {
     setItems((prevItems) => [...prevItems, data]);
 
     console.log("submit button clicked", data);
-    
-    axios.post('https://trackerappauthentication-default-rtdb.firebaseio.com/items.json', data).then((response) => {
+
+    axios
+      .post(
+        "https://trackerappauthentication-default-rtdb.firebaseio.com/items.json",
+        data
+      )
+      .then((response) => {
         console.log(response);
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         console.error(error);
-    })
+      });
 
-    priceRef.current.value='';
-    descriptionRef.current.value='';
-    categoryRef.current.value='';
-
+    priceRef.current.value = "";
+    descriptionRef.current.value = "";
+    categoryRef.current.value = "";
   };
   const deleteBtnHandler = (id) => {
-    axios.delete(`https://trackerappauthentication-default-rtdb.firebaseio.com/items/${id}.json`).then((response) => {
-        console.log('Expense deleted successfully:', response.data);
+    axios
+      .delete(
+        `https://trackerappauthentication-default-rtdb.firebaseio.com/items/${id}.json`
+      )
+      .then((response) => {
+        console.log("Expense deleted successfully:", response.data);
         setItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         console.error(error);
-    })
-  }
+      });
+  };
 
-  const editBtnhandler = (item) => {
-    priceRef.current.value=item.price;
-    descriptionRef.current.value=item.description;
-    categoryRef.current.value=item.category;
+  
+     
+  const saveChangesHandler = (item) => {
+    setModal(false);
+    console.log(item)
+    const updatedItem = {
+      price: editPriceRef.current.value,
+      description: editDescriptionRef.current.value,
+      category: editCategoryRef.current.value,
+      id: item.id,
+      key: Date.now(),
+    };
 
-    axios.put(`https://trackerappauthentication-default-rtdb.firebaseio.com/items/${item.id}.json`, item).then((response) => {
-        console.log('Expense updated successfully:', response.data);
-        setItems((prevItems) => prevItems.filter((each) => each.id !== item.id));
-    })
+    axios
+      .put(
+        `https://trackerappauthentication-default-rtdb.firebaseio.com/items/${item.id}.json`,
+        updatedItem
+      )
+      .then((response) => {
+        console.log("Expense updated successfully:", response.data);
+        setItems((prevItems) =>
+          prevItems.map((i) => (i.id === item.id ? updatedItem : i))
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const editBtnhandler = (item,id) => {
+    setModal(true);
+    console.log(item)
+    setEditDescription(item.description);
+    setEditPrice(item.price);
+    setEditCategory(item.category);
+    setItemToEdit(item)
   }
 
   return (
@@ -145,7 +190,7 @@ function WelcomePage() {
             <Form.Control
               required
               ref={priceRef}
-              type="text"
+              type="number"
               placeholder="Enter Price"
             />
           </Form.Group>
@@ -177,6 +222,65 @@ function WelcomePage() {
             Submit
           </Button>
         </Form>
+        <div>
+          {modal && (
+            <div
+              className="modal show"
+              style={{ display: "block", position: "initial" }}
+            >
+              <Modal.Dialog>
+                <Modal.Header onClick={() => setModal(false)} closeButton>
+                  <Modal.Title>Modal title</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Price</Form.Label>
+                    <Form.Control
+                      type="number"
+                      placeholder="Enter Price"
+                      value={editPrice}
+                      ref={editPriceRef}
+                      onChange={(e) => setEditPrice(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      value={editDescription}
+                      placeholder="Enter Description"
+                      ref={editDescriptionRef}
+                      onChange={(e) => setEditDescription(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Category</Form.Label>
+                    <Form.Select required  ref={editCategoryRef} onChange={(e) => setEditCategory(e.target.value)}>
+                      <option value={editCategory} disabled>
+                        Select a category
+                      </option>
+                      <option value="Food">Food</option>
+                      <option value="Movie">Movie</option>
+                      <option value="Travel">Travel</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Modal.Body>
+
+                <Modal.Footer>
+                  <Button onClick={() => setModal(false)} variant="secondary">
+                    Close
+                  </Button>
+                  <Button onClick={() => saveChangesHandler(itemToEdit)} variant="primary">Save changes</Button>
+                </Modal.Footer>
+              </Modal.Dialog>
+            </div>
+          )}
+        </div>
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -185,7 +289,7 @@ function WelcomePage() {
               <th>Price Name</th>
               <th>category</th>
               <th>Delete</th>
-              <th>Edit  </th>
+              <th>Edit </th>
             </tr>
           </thead>
           <tbody>
@@ -195,8 +299,22 @@ function WelcomePage() {
                 <td>{item.description}</td>
                 <td>{item.price}</td>
                 <td>{item.category}</td>
-                <td><Button onClick={() => deleteBtnHandler(item.id)} variant="danger">Delete</Button></td>
-                <td><Button onClick={() => editBtnhandler(item)} variant="primary">Edit</Button></td>
+                <td>
+                  <Button
+                    onClick={() => deleteBtnHandler(item.id)}
+                    variant="danger"
+                  >
+                    Delete
+                  </Button>
+                </td>
+                <td>
+                  <Button
+                    onClick={() => editBtnhandler(item,item.id)}
+                    variant="primary"
+                  >
+                    Edit
+                  </Button>
+                </td>
               </tr>
             ))}
           </tbody>
