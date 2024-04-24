@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Table from 'react-bootstrap/Table';
+import Table from "react-bootstrap/Table";
 
 function WelcomePage() {
   const priceRef = useRef(null);
@@ -12,6 +12,27 @@ function WelcomePage() {
   const categoryRef = useRef(null);
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+          const response = await axios.get('https://trackerappauthentication-default-rtdb.firebaseio.com/items.json');
+          const data = response.data;
+          const itemsArray = [];
+    
+          for (let key in data) {
+            itemsArray.push({ ...data[key], id: key });
+          }
+    
+          setItems(itemsArray);
+          console.log(itemsArray)   
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+    
+      fetchData();
+  },[])
   const verifyEmail = () => {
     const token = localStorage.getItem("token");
 
@@ -58,29 +79,42 @@ function WelcomePage() {
       price: price,
       description: description,
       category: category,
-      id: Date.now(),
+      key: Date.now(),
     };
 
     setItems((prevItems) => [...prevItems, data]);
 
     console.log("submit button clicked", data);
+    
+    axios.post('https://trackerappauthentication-default-rtdb.firebaseio.com/items.json', data).then((response) => {
+        console.log(response);
+    })
+    .catch((error) => {
+        console.error(error);
+    })
+
+    priceRef.current.value='';
+    descriptionRef.current.value='';
+    categoryRef.current.value='';
+
   };
 
   return (
     <div className="container text-center d-flex flex-column align-items-center">
-      <div>Welcome to Tracker App</div>
+      <div className="mt-2 d-flex">
+        <div className="mb-4">
+          Your Profile is Incomplete
+          <Link to="/profilepage" className="ms-2">
+            Complete Now
+          </Link>
+        </div>
+      </div>
       <div className="mt-4 mb-4">
         <button onClick={verifyEmail} className="btn btn-primary">
           Verify Your Email
         </button>
       </div>
-      <div className="mb-4">
-        Your Profile is Incomplete
-        <Link to="/profilepage" className="ms-2">
-          Complete Now
-        </Link>
-      </div>
-      
+
       <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
         Logout
       </button>
@@ -133,9 +167,9 @@ function WelcomePage() {
             </tr>
           </thead>
           <tbody>
-            {items.map((item,i) => (
-              <tr>
-                <td>{i+1}</td>
+            {items.map((item, i) => (
+              <tr key={item.key}>
+                <td>{i + 1}</td>
                 <td>{item.description}</td>
                 <td>{item.price}</td>
                 <td>{item.category}</td>
