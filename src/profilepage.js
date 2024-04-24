@@ -1,9 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
 const ProfilePage = () => {
   const [name, setName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    
+    axios.post('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyD05UV-fq-o76VjeAcMGXYaG9RJDvESYyo', { idToken: token })  .then((response) => {
+        console.log(response)
+      const user = response.data.users[0];
+      setName(user.displayName || "");
+      setImageUrl(user.photoUrl || "");
+    })
+    .catch((error) => {
+      console.error("Error fetching profile:", error);
+    });
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
