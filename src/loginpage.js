@@ -38,6 +38,7 @@ const LoginPage = () => {
       })
       .then((data) => {
         console.log(data);
+        localStorage.setItem("token", data.idToken);
         navigate("/welcomepage");
       })
       .catch((err) => {
