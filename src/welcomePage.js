@@ -98,6 +98,26 @@ function WelcomePage() {
     categoryRef.current.value='';
 
   };
+  const deleteBtnHandler = (id) => {
+    axios.delete(`https://trackerappauthentication-default-rtdb.firebaseio.com/items/${id}.json`).then((response) => {
+        console.log('Expense deleted successfully:', response.data);
+        setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    })
+    .catch((error) => {
+        console.error(error);
+    })
+  }
+
+  const editBtnhandler = (item) => {
+    priceRef.current.value=item.price;
+    descriptionRef.current.value=item.description;
+    categoryRef.current.value=item.category;
+
+    axios.put(`https://trackerappauthentication-default-rtdb.firebaseio.com/items/${item.id}.json`, item).then((response) => {
+        console.log('Expense updated successfully:', response.data);
+        setItems((prevItems) => prevItems.filter((each) => each.id !== item.id));
+    })
+  }
 
   return (
     <div className="container text-center d-flex flex-column align-items-center">
@@ -164,6 +184,8 @@ function WelcomePage() {
               <th>Description</th>
               <th>Price Name</th>
               <th>category</th>
+              <th>Delete</th>
+              <th>Edit  </th>
             </tr>
           </thead>
           <tbody>
@@ -173,6 +195,8 @@ function WelcomePage() {
                 <td>{item.description}</td>
                 <td>{item.price}</td>
                 <td>{item.category}</td>
+                <td><Button onClick={() => deleteBtnHandler(item.id)} variant="danger">Delete</Button></td>
+                <td><Button onClick={() => editBtnhandler(item)} variant="primary">Edit</Button></td>
               </tr>
             ))}
           </tbody>
