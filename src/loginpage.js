@@ -23,7 +23,6 @@ const LoginPage = () => {
       headers: {
         "Content-Type": "application/json",
       },
-     
     })
       .then((response) => {
         if (response.ok) {
@@ -87,8 +86,12 @@ const LoginPage = () => {
                     Login
                   </button>
                 </form>
-                <div className="mt-3 text-center">
-                  <small>
+                <div className="mt-3 text-center d-flex justify-content-between">
+                  <small className="text-muted ">
+                    Forgot Your Password?{" "}
+                    <Link to="/forgotpasswordpage">Forgot Password</Link>
+                  </small>
+                  <small className="text-muted ml-3">
                     Dont have an account? <Link to="/">Sign Up</Link>
                   </small>
                 </div>

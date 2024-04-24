@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LoginPage from "./loginpage";
 import WelcomePage from "./welcomePage";
 import Profilepage from "./profilepage";
+import ForgotPasswordPage from "./forgotpasswordpage";
 function App() {
   return (
     <>
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <div>
           <Routes>
+            <Route path="/forgotpasswordpage" element={<ForgotPasswordPage />} />
             <Route path="/" element={<SignUpPage />} />
             <Route path="/loginpage" element={<LoginPage />} />
             <Route path="/profilepage" element={<Profilepage />} />
