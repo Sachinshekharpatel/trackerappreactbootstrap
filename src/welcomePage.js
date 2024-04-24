@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 function WelcomePage() {
+    const navigate = useNavigate();
   const verifyEmail = () => {
     const token = localStorage.getItem("token");
 
@@ -34,6 +35,10 @@ function WelcomePage() {
       });
   };
 
+  const logoutUser = () => {
+    localStorage.removeItem("token");
+    navigate("/loginpage");
+  }
   return (
     <div className="container text-center d-flex flex-column align-items-center">
       <div>Welcome to Tracker App</div>
@@ -49,7 +54,11 @@ function WelcomePage() {
         </Link>
       </div>
       <Link to="/loginpage">Login Page</Link>
+      <button onClick={logoutUser} className="btn btn-danger">
+          Logout
+        </button>
     </div>
+
   );
 }
 
