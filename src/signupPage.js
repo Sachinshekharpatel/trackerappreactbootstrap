@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { auth } from "./firebase";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle sign-up logic here
@@ -31,9 +32,11 @@ const SignUpPage = () => {
     })
       .then((res) => {
         return res.json();
+  
       })
       .then((data) => {
         console.log(data);
+        navigate("/loginpage");
       })
       .catch((err) => {
         console.log(err.error.message);
