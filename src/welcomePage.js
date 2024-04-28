@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import exportFromJSON from "export-from-json";
 import { useSelector } from "react-redux";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -10,7 +11,9 @@ import Modal from "react-bootstrap/Modal";
 import { authActions } from "./authreducerredux";
 import { useDispatch } from "react-redux";
 import { expenseActions } from "./authreducerredux";
+import { themeActions } from "./authreducerredux";
 function WelcomePage() {
+  const darkTheme = useSelector((state) => state.theme.darkMode);
   const dispatch = useDispatch();
   const itemArrayReducer = useSelector((state) => state.expenses.expenseItems);
   const loginStatus = useSelector(
@@ -30,10 +33,18 @@ function WelcomePage() {
   const [items, setItems] = useState([]);
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
-   useEffect(()=>{
-     console.log(isPrice);
-   },[isPrice])
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const themeClass = darkTheme ? "bg-dark text-light" : "light-theme";
 
+  useEffect(() => {
+    console.log(isPrice);
+    console.log(darkTheme);
+  }, [isPrice, isButtonDisabled, darkTheme]);
+
+  const handleThemeButtonClick = () => {
+    setIsButtonDisabled(!isButtonDisabled);
+    dispatch(themeActions.toggleTheme());
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,7 +112,6 @@ function WelcomePage() {
   };
 
   const submitBtnHandler = (e) => {
-    e.preventDefault();
     const price = priceRef.current.value;
     const description = descriptionRef.current.value;
     const category = categoryRef.current.value;
@@ -183,179 +193,211 @@ function WelcomePage() {
     setEditCategory(item.category);
     setItemToEdit(item);
   };
-  
-  
+
+  const downloadBtnHandler = () => {
+    const price = priceRef.current.value;
+    const description = descriptionRef.current.value;
+    const category = categoryRef.current.value;
+
+    if (price.length > 0 && description.length > 0 && category.length > 0) {
+      const data = [
+        {
+          price: price,
+          description: description,
+          category: category,
+          key: Date.now(),
+        },
+      ];
+      const filename = "items.csv";
+      const exportType = exportFromJSON.types.csv;
+      exportFromJSON({ data, fileName: filename, exportType });
+      submitBtnHandler();
+    } else {
+      alert("Please fill all the required field to download invoice");
+    }
+  };
 
   return (
-    <div className="container text-center d-flex flex-column align-items-center">
-      <div className="mt-2 d-flex">
-        <div className="mb-4">
-          Your Profile is Incomplete
-          <Link to="/profilepage" className="ms-2">
-            Complete Now
-          </Link>
+    <div className={themeClass}>
+      <div className="container text-center d-flex flex-column align-items-center">
+        <div className="mt-2 d-flex">
+          <div className="mb-4">
+            Your Profile is Incomplete
+            <Link to="/profilepage" className="ms-2">
+              Complete Now
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="mt-4 mb-4">
-        <button onClick={verifyEmail} className="btn btn-primary">
-          Verify Your Email
+        <div className="mt-4 mb-4">
+          <button onClick={verifyEmail} className="btn btn-primary">
+            Verify Your Email
+          </button>
+        </div>
+        <button className="btn btn-danger" onClick={handleThemeButtonClick}>
+          {isButtonDisabled ?  "Enable Dark Mode" : "Enable Light Mode" }
         </button>
-       
-      </div>
+        <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
+          Logout
+        </button>
 
-      <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
-        Logout
-      </button>
-      <div>
-        <Form onSubmit={submitBtnHandler}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Price </Form.Label>
-            <Form.Control
-              required
-              ref={priceRef}
-              onChange={()=>setIsPrice(priceRef.current.value)}
-              type="number"
-              placeholder="Enter Price"
-            />
-          </Form.Group>
+        <div>
+          <Form>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Price </Form.Label>
+              <Form.Control
+                required
+                ref={priceRef}
+                onChange={() => setIsPrice(priceRef.current.value)}
+                type="number"
+                placeholder="Enter Price"
+              />
+            </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              required
-              ref={descriptionRef}
-              type="text"
-              placeholder="Description"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Category</Form.Label>
-            <Form.Control
-              required
-              ref={categoryRef}
-              as="select"
-              defaultValue=""
-            >
-              <option value=""></option>
-              <option value="Food">Food</option>
-              <option value="Movie">Movie</option>
-              <option value="Travel">Travel</option>
-            </Form.Control>
-          </Form.Group>
-          <Button className="mb-3" variant="primary" type="submit">
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                required
+                ref={descriptionRef}
+                type="text"
+                placeholder="Description"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                required
+                ref={categoryRef}
+                as="select"
+                defaultValue=""
+              >
+                <option value=""></option>
+                <option value="Food">Food</option>
+                <option value="Movie">Movie</option>
+                <option value="Travel">Travel</option>
+              </Form.Control>
+            </Form.Group>
+          </Form>
+          <Button className="mb-3" variant="primary" onClick={submitBtnHandler}>
             Submit
           </Button>
-        
-        </Form>
-        {isPrice > 9999 &&  <Button className="mb-3" variant="success" type="submit">
-           Activate Premium
-          </Button>}
-        <div>
-          {modal && (
-            <div
-              className="modal show"
-              style={{ display: "block", position: "initial" }}
-            >
-              <Modal.Dialog>
-                <Modal.Header onClick={() => setModal(false)} closeButton>
-                  <Modal.Title>Modal title</Modal.Title>
-                </Modal.Header>
-
-                <Modal.Body>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Price</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="Enter Price"
-                      value={editPrice}
-                      ref={editPriceRef}
-                      onChange={(e) => setEditPrice(e.target.value)}
-                      required
-                    />
-                  </Form.Group>
-
-                  <Form.Group className="mb-3">
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      value={editDescription}
-                      placeholder="Enter Description"
-                      ref={editDescriptionRef}
-                      onChange={(e) => setEditDescription(e.target.value)}
-                      required
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Category</Form.Label>
-                    <Form.Select
-                      required
-                      ref={editCategoryRef}
-                      onChange={(e) => setEditCategory(e.target.value)}
-                    >
-                      <option value={editCategory} disabled>
-                        Select a category
-                      </option>
-                      <option value="Food">Food</option>
-                      <option value="Movie">Movie</option>
-                      <option value="Travel">Travel</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Modal.Body>
-
-                <Modal.Footer>
-                  <Button onClick={() => setModal(false)} variant="secondary">
-                    Close
-                  </Button>
-                  <Button
-                    onClick={() => saveChangesHandler(itemToEdit)}
-                    variant="primary"
-                  >
-                    Save changes
-                  </Button>
-                </Modal.Footer>
-              </Modal.Dialog>
-            </div>
+          <Button
+            className="mb-3 btn btn-btn btn-success"
+            onClick={downloadBtnHandler}
+          >
+            Download Invoice
+          </Button>
+          {isPrice > 9999 && (
+            <Button className="mb-3" variant="success" type="submit">
+              Activate Premium
+            </Button>
           )}
-        </div>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>.</th>
-              <th>Description</th>
-              <th>Price Name</th>
-              <th>category</th>
-              <th>Delete</th>
-              <th>Edit </th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, i) => (
-              <tr key={item.key}>
-                <td>{i + 1}</td>
-                <td>{item.description}</td>
-                <td>{item.price}</td>
-                <td>{item.category}</td>
-                <td>
-                  <Button
-                    onClick={() => deleteBtnHandler(item.id)}
-                    variant="danger"
-                  >
-                    Delete
-                  </Button>
-                </td>
-                <td>
-                  <Button
-                    onClick={() => editBtnhandler(item, item.id)}
-                    variant="primary"
-                  >
-                    Edit
-                  </Button>
-                </td>
+          <div>
+            {modal && (
+              <div
+                className="modal show"
+                style={{ display: "block", position: "initial" }}
+              >
+                <Modal.Dialog>
+                  <Modal.Header onClick={() => setModal(false)} closeButton>
+                    <Modal.Title>Modal title</Modal.Title>
+                  </Modal.Header>
+
+                  <Modal.Body>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Price</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="Enter Price"
+                        value={editPrice}
+                        ref={editPriceRef}
+                        onChange={(e) => setEditPrice(e.target.value)}
+                        required
+                      />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                      <Form.Label>Description</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        value={editDescription}
+                        placeholder="Enter Description"
+                        ref={editDescriptionRef}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                        required
+                      />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Category</Form.Label>
+                      <Form.Select
+                        required
+                        ref={editCategoryRef}
+                        onChange={(e) => setEditCategory(e.target.value)}
+                      >
+                        <option value={editCategory} disabled>
+                          Select a category
+                        </option>
+                        <option value="Food">Food</option>
+                        <option value="Movie">Movie</option>
+                        <option value="Travel">Travel</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Modal.Body>
+
+                  <Modal.Footer>
+                    <Button onClick={() => setModal(false)} variant="secondary">
+                      Close
+                    </Button>
+                    <Button
+                      onClick={() => saveChangesHandler(itemToEdit)}
+                      variant="primary"
+                    >
+                      Save changes
+                    </Button>
+                  </Modal.Footer>
+                </Modal.Dialog>
+              </div>
+            )}
+          </div>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>.</th>
+                <th>Description</th>
+                <th>Price Name</th>
+                <th>category</th>
+                <th>Delete</th>
+                <th>Edit </th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {items.map((item, i) => (
+                <tr key={item.key}>
+                  <td>{i + 1}</td>
+                  <td>{item.description}</td>
+                  <td>{item.price}</td>
+                  <td>{item.category}</td>
+                  <td>
+                    <Button
+                      onClick={() => deleteBtnHandler(item.id)}
+                      variant="danger"
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                  <td>
+                    <Button
+                      onClick={() => editBtnhandler(item, item.id)}
+                      variant="primary"
+                    >
+                      Edit
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
       </div>
     </div>
   );
