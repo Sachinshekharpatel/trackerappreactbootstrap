@@ -1,8 +1,21 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "./authreducerredux";
 const LoginPage = () => {
+  const dispatch = useDispatch();
+  const loginStatus = useSelector(
+    (state) => state.authentication.isAuthenticated
+  );
+  useEffect(() => {
+    console.log(loginStatus);//
+    
+    if(loginStatus){
+      navigate("/welcomepage");
+    }
+  },[loginStatus])
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -37,9 +50,12 @@ const LoginPage = () => {
         }
       })
       .then((data) => {
-        console.log(data);
+        dispatch(authActions.login());
         localStorage.setItem("token", data.idToken);
-        navigate("/welcomepage");
+        if (loginStatus) {
+          console.log(data);
+          navigate("/welcomepage");
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -81,7 +97,7 @@ const LoginPage = () => {
                       required
                     />
                   </div>
-
+              
                   <button type="submit" className="btn btn-primary w-100">
                     Login
                   </button>

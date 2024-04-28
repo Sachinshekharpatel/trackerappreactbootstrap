@@ -2,25 +2,38 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useSelector } from "react-redux";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
-
+import { authActions } from "./authreducerredux";
+import { useDispatch } from "react-redux";
+import { expenseActions } from "./authreducerredux";
 function WelcomePage() {
-    const [itemToEdit, setItemToEdit] = useState('');
-  const priceRef = useRef(null);
+  const dispatch = useDispatch();
+  const itemArrayReducer = useSelector((state) => state.expenses.expenseItems);
+  const loginStatus = useSelector(
+    (state) => state.authentication.isAuthenticated
+  );
+  const [isPrice, setIsPrice] = useState(0);
+  const [itemToEdit, setItemToEdit] = useState("");
+  const priceRef = useRef(0);
   const descriptionRef = useRef(null);
   const categoryRef = useRef(null);
-  const editPriceRef = useRef(null)
+  const editPriceRef = useRef(null);
   const editDescriptionRef = useRef(null);
   const editCategoryRef = useRef(null);
-  const [editDescription,setEditDescription] = useState('');
-  const [editPrice,setEditPrice] = useState('');
-  const [editCategory,setEditCategory] = useState('');
+  const [editDescription, setEditDescription] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [editCategory, setEditCategory] = useState("");
   const [items, setItems] = useState([]);
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
+   useEffect(()=>{
+     console.log(isPrice);
+   },[isPrice])
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +46,7 @@ function WelcomePage() {
 
         for (let key in data) {
           itemsArray.push({ ...data[key], id: key });
+          dispatch(expenseActions.addExpense({ ...data[key], id: key }));
         }
 
         setItems(itemsArray);
@@ -43,7 +57,10 @@ function WelcomePage() {
     };
 
     fetchData();
-  }, []);
+    if (!loginStatus) {
+      navigate("/loginpage");
+    }
+  }, [loginStatus]);
   const verifyEmail = () => {
     const token = localStorage.getItem("token");
 
@@ -76,8 +93,11 @@ function WelcomePage() {
   };
 
   const logoutUser = () => {
-    localStorage.removeItem("token");
-    navigate("/loginpage");
+    dispatch(authActions.logout());
+    if (!loginStatus) {
+      localStorage.removeItem("token");
+      navigate("/loginpage");
+    }
   };
 
   const submitBtnHandler = (e) => {
@@ -104,11 +124,12 @@ function WelcomePage() {
       )
       .then((response) => {
         console.log(response);
+        dispatch(expenseActions.addExpense(data));
       })
       .catch((error) => {
         console.error(error);
       });
-
+    setIsPrice(0);
     priceRef.current.value = "";
     descriptionRef.current.value = "";
     categoryRef.current.value = "";
@@ -121,17 +142,16 @@ function WelcomePage() {
       .then((response) => {
         console.log("Expense deleted successfully:", response.data);
         setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+        dispatch(expenseActions.deleteExpense(id));
       })
       .catch((error) => {
         console.error(error);
       });
   };
 
-  
-     
   const saveChangesHandler = (item) => {
     setModal(false);
-    console.log(item)
+    console.log(item);
     const updatedItem = {
       price: editPriceRef.current.value,
       description: editDescriptionRef.current.value,
@@ -155,14 +175,16 @@ function WelcomePage() {
         console.error(error);
       });
   };
-  const editBtnhandler = (item,id) => {
+  const editBtnhandler = (item, id) => {
     setModal(true);
-    console.log(item)
+    console.log(item);
     setEditDescription(item.description);
     setEditPrice(item.price);
     setEditCategory(item.category);
-    setItemToEdit(item)
-  }
+    setItemToEdit(item);
+  };
+  
+  
 
   return (
     <div className="container text-center d-flex flex-column align-items-center">
@@ -178,6 +200,7 @@ function WelcomePage() {
         <button onClick={verifyEmail} className="btn btn-primary">
           Verify Your Email
         </button>
+       
       </div>
 
       <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
@@ -190,6 +213,7 @@ function WelcomePage() {
             <Form.Control
               required
               ref={priceRef}
+              onChange={()=>setIsPrice(priceRef.current.value)}
               type="number"
               placeholder="Enter Price"
             />
@@ -221,7 +245,11 @@ function WelcomePage() {
           <Button className="mb-3" variant="primary" type="submit">
             Submit
           </Button>
+        
         </Form>
+        {isPrice > 9999 &&  <Button className="mb-3" variant="success" type="submit">
+           Activate Premium
+          </Button>}
         <div>
           {modal && (
             <div
@@ -260,7 +288,11 @@ function WelcomePage() {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Category</Form.Label>
-                    <Form.Select required  ref={editCategoryRef} onChange={(e) => setEditCategory(e.target.value)}>
+                    <Form.Select
+                      required
+                      ref={editCategoryRef}
+                      onChange={(e) => setEditCategory(e.target.value)}
+                    >
                       <option value={editCategory} disabled>
                         Select a category
                       </option>
@@ -275,7 +307,12 @@ function WelcomePage() {
                   <Button onClick={() => setModal(false)} variant="secondary">
                     Close
                   </Button>
-                  <Button onClick={() => saveChangesHandler(itemToEdit)} variant="primary">Save changes</Button>
+                  <Button
+                    onClick={() => saveChangesHandler(itemToEdit)}
+                    variant="primary"
+                  >
+                    Save changes
+                  </Button>
                 </Modal.Footer>
               </Modal.Dialog>
             </div>
@@ -309,7 +346,7 @@ function WelcomePage() {
                 </td>
                 <td>
                   <Button
-                    onClick={() => editBtnhandler(item,item.id)}
+                    onClick={() => editBtnhandler(item, item.id)}
                     variant="primary"
                   >
                     Edit

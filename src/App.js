@@ -5,10 +5,11 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LoginPage from "./loginpage";
 import WelcomePage from "./welcomePage";
 import Profilepage from "./profilepage";
+import {Fragment} from "react";
 import ForgotPasswordPage from "./forgotpasswordpage";
 function App() {
   return (
-    <>
+    <Fragment>
       <h1 className="text-center">Tracker App</h1>
       <Router>
         <div>
@@ -21,7 +22,7 @@ function App() {
           </Routes>
         </div>
       </Router>
-    </>
+    </Fragment>
   );
 }
 
