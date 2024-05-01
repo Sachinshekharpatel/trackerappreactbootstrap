@@ -1,8 +1,14 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
-
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+import { render, screen } from "@testing-library/react";
+import App from "./App";
+    test("Should render Learn React' text", () => {
+        // Arrange
+        render(<App />);
+      
+        // Act - Nothing to act on in this case
+      
+        // Assert
+        const element = screen.getByText('Learn React' , { exact: false });
+        expect(element).toBeInTheDocument();
+        
+      });
+      

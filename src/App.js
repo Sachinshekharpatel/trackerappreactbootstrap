@@ -10,7 +10,7 @@ import ForgotPasswordPage from "./forgotpasswordpage";
 function App() {
   return (
     <Fragment>
-      <h1 className="text-center">Tracker App</h1>
+      <h1 className="text-center">Learn React with Tracker App</h1>
       <Router>
         <div>
           <Routes>
