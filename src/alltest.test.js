@@ -4,7 +4,7 @@ import ProfilePage from "./profilepage";
 import WelcomePage from "./welcomePage";
 import ForgotPasswordPage from "./forgotpasswordpage";
 import LoginPage from "./loginpage";
-import "text-encoding-polyfill";
+
 
 test("should render 'Already have an account' text", () => {
   render(<SignUpPage />);
