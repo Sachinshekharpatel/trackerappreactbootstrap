@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import exportFromJSON from "export-from-json";
+import exportFromJSON from "export-from-json"; // this file is the reason  how i can download csv file from my app.
 import { useSelector } from "react-redux";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -34,7 +34,7 @@ function WelcomePage() {
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const themeClass = darkTheme ? "bg-dark text-light" : "light-theme";
+  const themeClass = darkTheme ? "bg-dark text-light" : "light-theme"; // this is the reason why after button click page goto dark mode and light mode
 
   useEffect(() => {
     console.log(isPrice);
@@ -42,8 +42,8 @@ function WelcomePage() {
   }, [isPrice, isButtonDisabled, darkTheme]);
 
   const handleThemeButtonClick = () => {
-    setIsButtonDisabled(!isButtonDisabled);
-    dispatch(themeActions.toggleTheme());
+    setIsButtonDisabled(!isButtonDisabled); // i had write logic  for button will be disabled after click than ... i change it to dark mode to light mode
+    dispatch(themeActions.toggleTheme());  
   };
 
   useEffect(() => {
@@ -115,14 +115,13 @@ function WelcomePage() {
     const price = priceRef.current.value;
     const description = descriptionRef.current.value;
     const category = categoryRef.current.value;
-
+  if(price.length > 0 && description.length > 0 && category.length > 0) {
     const data = {
       price: price,
       description: description,
       category: category,
       key: Date.now(),
     };
-
     setItems((prevItems) => [...prevItems, data]);
 
     console.log("submit button clicked", data);
@@ -139,10 +138,15 @@ function WelcomePage() {
       .catch((error) => {
         console.error(error);
       });
-    setIsPrice(0);
+    setIsPrice(0); // this is used to enable  premium button i think
     priceRef.current.value = "";
     descriptionRef.current.value = "";
     categoryRef.current.value = "";
+  }else {
+    alert("Please fill all the required field to Submit ");
+  }
+
+   
   };
   const deleteBtnHandler = (id) => {
     axios
@@ -178,7 +182,7 @@ function WelcomePage() {
       .then((response) => {
         console.log("Expense updated successfully:", response.data);
         setItems((prevItems) =>
-          prevItems.map((i) => (i.id === item.id ? updatedItem : i))
+          prevItems.map((iTemOfMap) => (iTemOfMap.id === item.id ? updatedItem : iTemOfMap))
         );
       })
       .catch((error) => {
@@ -209,8 +213,8 @@ function WelcomePage() {
         },
       ];
       const filename = "items.csv";
-      const exportType = exportFromJSON.types.csv;
-      exportFromJSON({ data, fileName: filename, exportType });
+      const exportType = exportFromJSON.types.csv; // in the place of csv we can use anytype of file i think 
+      exportFromJSON({ data, fileName: filename, exportType }); //this is the structure format to export our file to download
       submitBtnHandler();
     } else {
       alert("Please fill all the required field to download invoice");
@@ -233,6 +237,7 @@ function WelcomePage() {
             Verify Your Email
           </button>
         </div>
+        {/* below button theme works because at the first div  i had use themeclass as a class name and that is the reason it is showing light mode and dark mode */}
         <button className="btn btn-danger" onClick={handleThemeButtonClick}>
           {isButtonDisabled ?  "Enable Dark Mode" : "Enable Light Mode" }
         </button>

@@ -35,7 +35,7 @@ const SignUpPage = () => {
   
       })
       .then((data) => {
-        console.log(data);
+        console.log(data); // this console. send data of the user to console who are newly signed up the page
         navigate("/loginpage");
       })
       .catch((err) => {

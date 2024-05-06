@@ -1,0 +1,83 @@
+[33mcommit 884d77c5f14a173e08a6a9cb65adeb7d78934b45[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed May 1 14:22:06 2024 +0530
+
+    test.js
+
+[33mcommit fba838571c2d26382571d1fbdbc590ed2ce54a0a[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Sun Apr 28 15:05:56 2024 +0530
+
+    download buttun added and dark mode light mode to the page addded using redux
+
+[33mcommit 5e014afe911aaff61118d72a47bfa098910b0509[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Sun Apr 28 13:43:13 2024 +0530
+
+    using redux 17 auth provided and other things
+
+[33mcommit 25b9c1df8aad47ac46d03aa6a8b88e33c560d530[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Thu Apr 25 02:08:54 2024 +0530
+
+    edit and delete Btn handler working good final last commit have some problem please ignoe that
+
+[33mcommit 010dbddbfd54cb901db89460cdde2dda9ff5a695[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Thu Apr 25 01:03:29 2024 +0530
+
+    edit and delelet Btn handler working fine
+
+[33mcommit d42593d77719d08aa1bf502167a1e2112fa81a75[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Thu Apr 25 00:48:05 2024 +0530
+
+    all data now fetching from the backend
+
+[33mcommit b64623cb416691f255d97892cef9cdd55e145941[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed Apr 24 22:03:36 2024 +0530
+
+    all the thing sare now visible on the screen once add 9
+
+[33mcommit 2f7ead25b67e7f685fdf8c595bbe282d6458936d[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed Apr 24 18:00:28 2024 +0530
+
+    forgot password working email now being send to the registered email
+
+[33mcommit 1239c1a4264eee6dd6bed2f22213ea545035666e[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed Apr 24 17:44:08 2024 +0530
+
+    logout button added with functionality 7
+
+[33mcommit 77653ab139cc1ca7ea75a0e5380718df90ac96af[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed Apr 24 17:36:20 2024 +0530
+
+    verify email done 6
+
+[33mcommit 448cbd4df2d87ecf5d449d76a32331348ece6f43[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed Apr 24 17:14:25 2024 +0530
+
+    5data is getting from the firebase and shown in the input fiels even after the refresh
+
+[33mcommit fc4f070b5f20130b371201ac998ac9d2dd926233[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed Apr 24 16:47:52 2024 +0530
+
+    update user detail done
+
+[33mcommit 28d04f88d4df1c1ea912331fb57bb946ecdcee92[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed Apr 24 14:58:17 2024 +0530
+
+    loginpage done authentication move to welcome page
+
+[33mcommit 6c159ff9675b00aeed777ffcb13e321a4fdff3f8[m
+Author: Sachinshekharpatel <heroft7024@gmail.com>
+Date:   Wed Apr 24 13:07:37 2024 +0530
+
+    first commit

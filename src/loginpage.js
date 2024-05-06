@@ -45,7 +45,9 @@ const LoginPage = () => {
           let errorMessage = "Authentication failed!";
           if (data_1 && data_1.error && data_1.error.message) {
             errorMessage = data_1.error.message;
+            
           }
+          alert('Email or password is incorrect');
           throw new Error(errorMessage);
         }
       })

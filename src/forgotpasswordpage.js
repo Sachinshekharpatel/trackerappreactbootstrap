@@ -12,7 +12,6 @@ function ForgotPasswordPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const data = {
       requestType: "PASSWORD_RESET",
       email: email,
@@ -28,11 +27,11 @@ function ForgotPasswordPage() {
           },
         }
       )
-      .then((response) => {
+      .then(() => {
         setMessage("Password reset email sent. Check your inbox.");
         setEmail("");
-    })
-      .catch((error) => {
+      })
+      .catch(() => {
         setMessage("");
       });
   };
@@ -51,7 +50,6 @@ function ForgotPasswordPage() {
                     Email
                   </label>
                   <input
-                    
                     type="email"
                     className="form-control"
                     value={email}

@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import SignUpPage from "./signupPage";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./loginpage";
 import WelcomePage from "./welcomePage";
 import Profilepage from "./profilepage";
@@ -9,7 +9,8 @@ import {Fragment} from "react";
 import ForgotPasswordPage from "./forgotpasswordpage";
 function App() {
   return (
-    <Fragment>
+    <>
+      <h3 className="text-center">Learn React</h3>
       <h1 className="text-center">Learn React with Tracker App</h1>
       <Router>
         <div>
@@ -22,7 +23,7 @@ function App() {
           </Routes>
         </div>
       </Router>
-    </Fragment>
+    </>
   );
 }
 
