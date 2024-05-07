@@ -34,8 +34,8 @@ function WelcomePage() {
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const themeClass = darkTheme ? "bg-dark text-light" : "light-theme"; // this is the reason why after button click page goto dark mode and light mode
-
+  const themeClass = darkTheme ? "bg-dark text-light" : "light-theme"; 
+//above themeclass this is the reason why after button click page goto dark mode and light mode
   useEffect(() => {
     console.log(isPrice);
     console.log(darkTheme);
@@ -45,6 +45,14 @@ function WelcomePage() {
     setIsButtonDisabled(!isButtonDisabled); // i had write logic  for button will be disabled after click than ... i change it to dark mode to light mode
     dispatch(themeActions.toggleTheme());  
   };
+  
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+      if(!token){
+        navigate("/loginpage");
+      }
+  },[token])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,9 +76,7 @@ function WelcomePage() {
     };
 
     fetchData();
-    if (!loginStatus) {
-      navigate("/loginpage");
-    }
+    
   }, [loginStatus]);
   const verifyEmail = () => {
     const token = localStorage.getItem("token");

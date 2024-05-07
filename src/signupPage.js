@@ -39,6 +39,7 @@ const SignUpPage = () => {
         navigate("/loginpage");
       })
       .catch((err) => {
+        alert(err.error.message);
         console.log(err.error.message);
       });
 

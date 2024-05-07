@@ -11,7 +11,7 @@ const ProfilePage = () => {
     
     axios.post('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyD05UV-fq-o76VjeAcMGXYaG9RJDvESYyo', { idToken: token })  .then((response) => {
         console.log(response)
-      const user = response.data.users[0];
+      const user = response.data.users[0]; // only one user is returned there is some reason i had put this
       setName(user.displayName || "");
       setImageUrl(user.photoUrl || "");
     })
@@ -24,7 +24,7 @@ const ProfilePage = () => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
-
+// below is update url for updating profile 
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD05UV-fq-o76VjeAcMGXYaG9RJDvESYyo`;
 
     const body = {

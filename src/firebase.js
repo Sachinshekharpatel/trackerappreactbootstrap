@@ -2,13 +2,15 @@ import { initializeApp } from "firebase/app";
 
 import { getAuth } from "firebase/auth";
 
+// https://firebase.google.com/docs/web/setup#available-libraries
+
 const firebaseConfig = {
-  apiKey: "AIzaSyD05UV-fq-o76VjeAcMGXYaG9RJDvESYyo",
-  authDomain: "trackerappauthentication.firebaseapp.com",
-  projectId: "trackerappauthentication",
-  storageBucket: "trackerappauthentication.appspot.com",
-  messagingSenderId: "812762423677",
-  appId: "1:812762423677:web:722e978332d68334602c14",
+  apiKey: "AIzaSyCptE9QtAawOyBKdjmzWWZM5PegYF0W-g0",
+  authDomain: "fir-cypresstestcase.firebaseapp.com",
+  projectId: "fir-cypresstestcase",
+  storageBucket: "fir-cypresstestcase.appspot.com",
+  messagingSenderId: "170387163472",
+  appId: "1:170387163472:web:aa4a636ae983614c9ac455"
 };
 
 const app = initializeApp(firebaseConfig);

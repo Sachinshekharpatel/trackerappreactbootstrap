@@ -9,10 +9,11 @@ const LoginPage = () => {
   const loginStatus = useSelector(
     (state) => state.authentication.isAuthenticated
   );
+  const token = localStorage.getItem("token");
   useEffect(() => {
     console.log(loginStatus);//
     
-    if(loginStatus){
+    if(loginStatus || token){
       navigate("/welcomepage");
     }
   },[loginStatus])

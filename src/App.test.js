@@ -1,12 +1,13 @@
-import { render, screen } from "@testing-library/react";
-
+import { render, screen, waitFor } from "@testing-library/react";
 import App from "./App";
-    test("Should render Learn React' text", () => {
 
-        render(<App />);
-   
-        const element = screen.getByText(/learn react/i);
-        expect(element).toBeInTheDocument();
-        
-      });
-      
+describe("App Component", () => {
+  test("renders learn react link", async () => {
+    render(<App />);
+
+    await waitFor(() => {
+      const linkElement = screen.getByText(/learn react/i);
+      expect(linkElement).toBeInTheDocument();
+    });
+  });
+});
