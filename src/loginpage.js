@@ -1,9 +1,10 @@
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "./authreducerredux";
+
 const LoginPage = () => {
   const dispatch = useDispatch();
   const loginStatus = useSelector(
@@ -11,12 +12,12 @@ const LoginPage = () => {
   );
   const token = localStorage.getItem("token");
   useEffect(() => {
-    console.log(loginStatus);//
-    
-    if(loginStatus || token){
+    console.log(loginStatus); //
+
+    if (loginStatus || token) {
       navigate("/welcomepage");
     }
-  },[loginStatus])
+  }, [loginStatus]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -46,9 +47,8 @@ const LoginPage = () => {
           let errorMessage = "Authentication failed!";
           if (data_1 && data_1.error && data_1.error.message) {
             errorMessage = data_1.error.message;
-            
           }
-          alert('Email or password is incorrect');
+          alert("Email or password is incorrect");
           throw new Error(errorMessage);
         }
       })
@@ -101,7 +101,7 @@ const LoginPage = () => {
                       required
                     />
                   </div>
-              
+
                   <button type="submit" className="btn btn-primary w-100">
                     Login
                   </button>
@@ -113,6 +113,11 @@ const LoginPage = () => {
                   </small>
                   <small className="text-muted ml-3">
                     Dont have an account? <Link to="/">Sign Up</Link>
+                  </small>
+                </div>
+                <div className="mt-3 text-center">
+                  <small className="text-muted">
+                     Developed by : Sachin shekhar patel   <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap"> GitHub</Link>
                   </small>
                 </div>
               </div>

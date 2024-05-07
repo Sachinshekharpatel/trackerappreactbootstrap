@@ -39,6 +39,27 @@ function WelcomePage() {
   const themeClass = darkTheme ? "bg-dark text-light" : "light-theme";
   const [showVerificationModal, SetShowVerificationModal] = useState(false);
   //above themeclass this is the reason why after button click page goto dark mode and light mode
+  const [name, setName] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    axios
+      .post(
+        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyD05UV-fq-o76VjeAcMGXYaG9RJDvESYyo",
+        { idToken: token }
+      )
+      .then((response) => {
+        console.log(response);
+        const user = response.data.users[0]; // only one user is returned there is some reason i had put this
+        setName(user.displayName || "");
+        setImageUrl(user.photoUrl || "");
+      })
+      .catch((error) => {
+        console.error("Error fetching profile:", error);
+      });
+  }, []);
   useEffect(() => {
     console.log(isPrice);
     console.log(darkTheme);
@@ -84,7 +105,7 @@ function WelcomePage() {
     };
 
     fetchData();
-  }, [loginStatus,email]);
+  }, [loginStatus, email]);
   const verifyEmail = () => {
     const token = localStorage.getItem("token");
 
@@ -109,7 +130,7 @@ function WelcomePage() {
         }
       )
       .then((response) => {
-        alert(`Verification email sent successfully to your ${email}`, );
+        alert(`Verification email sent successfully to your ${email}`);
         // console.log("Verification email sent:", response.data);
       })
       .catch((error) => {
@@ -124,7 +145,7 @@ function WelcomePage() {
       localStorage.removeItem("token");
       localStorage.removeItem("email");
       navigate("/loginpage");
-      email = '';
+      email = "";
     }
   };
 
@@ -245,12 +266,55 @@ function WelcomePage() {
       <div className="container text-center d-flex flex-column align-items-center">
         <div>
           <div className="mt-2 d-flex">
-            <div className="mb-4">
-              Your Profile is Incomplete
-              <Link to="/profilepage" className="ms-2">
-                Complete Now
-              </Link>
-            </div>
+            {name == "" && imageUrl == "" ? (
+              <div
+              className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+              '
+            >
+              Profile Is Incomplete
+            
+                <Link to="/profilepage" className="ms-2">
+                  Complete Now
+                </Link>
+              </div>
+            ) : (
+              <div className="badge-container">
+                <div
+                  className='
+                    d-flex
+                    justify-content-center
+                    align-items-center
+                    text-center
+                    variant"
+                    text-success
+                    badge
+                  '
+                >
+                  Profile Is Completed
+                </div>
+                <div className='
+                    d-flex
+                    justify-content-center
+                    align-items-center
+                    text-center
+                    variant"
+                    text-success
+                    badge
+                  '>
+                  Edit your profile
+                  <Link to="/profilepage" className="ms-2">
+                    Edit
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
           <div className="mt-4 mb-4">
             <button onClick={verifyEmail} className="btn btn-primary">
@@ -424,6 +488,15 @@ function WelcomePage() {
             </tbody>
           </Table>
         </div>
+      </div>
+      <div className="mt-3 text-center">
+        <small className="text-muted">
+          Developed by : Sachin shekhar patel
+          <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap">
+            {" "}
+            GitHub
+          </Link>
+        </small>
       </div>
     </div>
   );

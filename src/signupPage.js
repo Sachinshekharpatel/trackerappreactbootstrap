@@ -113,6 +113,11 @@ const SignUpPage = () => {
                   Already have an account? <Link to="/loginpage">Login Page</Link>
                 </small>
               </div>
+              <div className="mt-3 text-center">
+                  <small className="text-muted">
+                     Developed by : Sachin shekhar patel <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap"> GitHub</Link>
+                  </small>
+                </div>
             </div>
           </div>
         </div>

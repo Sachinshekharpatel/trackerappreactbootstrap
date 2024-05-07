@@ -5,37 +5,41 @@ const ProfilePage = () => {
   const [name, setName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
-
   useEffect(() => {
     const token = localStorage.getItem("token");
-    
-    axios.post('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyD05UV-fq-o76VjeAcMGXYaG9RJDvESYyo', { idToken: token })  .then((response) => {
-        console.log(response)
-      const user = response.data.users[0]; // only one user is returned there is some reason i had put this
-      setName(user.displayName || "");
-      setImageUrl(user.photoUrl || "");
-    })
-    .catch((error) => {
-      console.error("Error fetching profile:", error);
-    });
+
+    axios
+      .post(
+        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyD05UV-fq-o76VjeAcMGXYaG9RJDvESYyo",
+        { idToken: token }
+      )
+      .then((response) => {
+        console.log(response);
+        const user = response.data.users[0]; // only one user is returned there is some reason i had put this
+        setName(user.displayName || "");
+        setImageUrl(user.photoUrl || "");
+      })
+      .catch((error) => {
+        console.error("Error fetching profile:", error);
+      });
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
-// below is update url for updating profile 
+    // below is update url for updating profile
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD05UV-fq-o76VjeAcMGXYaG9RJDvESYyo`;
 
     const body = {
       idToken: token,
       displayName: name,
       photoUrl: imageUrl,
-      returnSecureToken: true
+      returnSecureToken: true,
     };
 
     fetch(url, {
-      method: "POST", 
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -58,7 +62,22 @@ const ProfilePage = () => {
 
   return (
     <div className="container">
-      <Link to="/welcomepage">Go to Welcome page</Link>
+      <div
+        className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+              '
+      >
+         
+        <Link to="/welcomepage" className="ms-2">
+          Go to HomePage
+        </Link>
+      </div>
       <div className="row justify-content-center">
         <div className="col-md-6">
           <div className="card mt-5">

@@ -5,8 +5,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./loginpage";
 import WelcomePage from "./welcomePage";
 import Profilepage from "./profilepage";
-
 import ForgotPasswordPage from "./forgotpasswordpage";
+
 function App() {
   return (
     <>
