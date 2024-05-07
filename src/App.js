@@ -6,7 +6,7 @@ import LoginPage from "./loginpage";
 import WelcomePage from "./welcomePage";
 import Profilepage from "./profilepage";
 import ForgotPasswordPage from "./forgotpasswordpage";
-
+//deployed link https://sachinsteps.netlify.app/ 
 function App() {
   return (
     <>
