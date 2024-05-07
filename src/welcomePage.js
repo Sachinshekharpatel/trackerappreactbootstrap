@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Modal, Button } from "react-bootstrap";
 import exportFromJSON from "export-from-json"; // this file is the reason  how i can download csv file from my app.
 import { useSelector } from "react-redux";
-import Button from "react-bootstrap/Button";
+import "./welcomepage.css";
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
-import Modal from "react-bootstrap/Modal";
+
 import { authActions } from "./authreducerredux";
 import { useDispatch } from "react-redux";
 import { expenseActions } from "./authreducerredux";
@@ -33,26 +34,30 @@ function WelcomePage() {
   const [items, setItems] = useState([]);
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
+  let email = localStorage.getItem("email");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const themeClass = darkTheme ? "bg-dark text-light" : "light-theme"; 
-//above themeclass this is the reason why after button click page goto dark mode and light mode
+  const themeClass = darkTheme ? "bg-dark text-light" : "light-theme";
+  const [showVerificationModal, SetShowVerificationModal] = useState(false);
+  //above themeclass this is the reason why after button click page goto dark mode and light mode
   useEffect(() => {
     console.log(isPrice);
     console.log(darkTheme);
   }, [isPrice, isButtonDisabled, darkTheme]);
 
+  const handleClose = () => SetShowVerificationModal(false);
+
   const handleThemeButtonClick = () => {
     setIsButtonDisabled(!isButtonDisabled); // i had write logic  for button will be disabled after click than ... i change it to dark mode to light mode
-    dispatch(themeActions.toggleTheme());  
+    dispatch(themeActions.toggleTheme());
   };
-  
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-      if(!token){
-        navigate("/loginpage");
-      }
-  },[token])
+    if (!token) {
+      navigate("/loginpage");
+    }
+  }, [token, showVerificationModal]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,12 +65,15 @@ function WelcomePage() {
         const response = await axios.get(
           "https://trackerappauthentication-default-rtdb.firebaseio.com/items.json"
         );
-        const data = response.data;
+        const dataObj = response.data;
+        console.log(dataObj);
         const itemsArray = [];
 
-        for (let key in data) {
-          itemsArray.push({ ...data[key], id: key });
-          dispatch(expenseActions.addExpense({ ...data[key], id: key }));
+        for (let key in dataObj) {
+          if (dataObj[key].email === email) {
+            itemsArray.push({ ...dataObj[key], id: key });
+            dispatch(expenseActions.addExpense({ ...dataObj[key], id: key }));
+          }
         }
 
         setItems(itemsArray);
@@ -76,8 +84,7 @@ function WelcomePage() {
     };
 
     fetchData();
-    
-  }, [loginStatus]);
+  }, [loginStatus,email]);
   const verifyEmail = () => {
     const token = localStorage.getItem("token");
 
@@ -102,7 +109,8 @@ function WelcomePage() {
         }
       )
       .then((response) => {
-        console.log("Verification email sent:", response.data);
+        alert(`Verification email sent successfully to your ${email}`, );
+        // console.log("Verification email sent:", response.data);
       })
       .catch((error) => {
         console.error("Error sending verification email:", error);
@@ -110,10 +118,13 @@ function WelcomePage() {
   };
 
   const logoutUser = () => {
+    console.log("logout button clicked");
     dispatch(authActions.logout());
-    if (!loginStatus) {
+    if (loginStatus || token) {
       localStorage.removeItem("token");
+      localStorage.removeItem("email");
       navigate("/loginpage");
+      email = '';
     }
   };
 
@@ -121,38 +132,38 @@ function WelcomePage() {
     const price = priceRef.current.value;
     const description = descriptionRef.current.value;
     const category = categoryRef.current.value;
-  if(price.length > 0 && description.length > 0 && category.length > 0) {
-    const data = {
-      price: price,
-      description: description,
-      category: category,
-      key: Date.now(),
-    };
-    setItems((prevItems) => [...prevItems, data]);
 
-    console.log("submit button clicked", data);
+    if (price.length > 0 && description.length > 0 && category.length > 0) {
+      const data = {
+        price: price,
+        description: description,
+        category: category,
+        email: email,
+        key: Date.now(),
+      };
+      setItems((prevItems) => [...prevItems, data]);
 
-    axios
-      .post(
-        "https://trackerappauthentication-default-rtdb.firebaseio.com/items.json",
-        data
-      )
-      .then((response) => {
-        console.log(response);
-        dispatch(expenseActions.addExpense(data));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    setIsPrice(0); // this is used to enable  premium button i think
-    priceRef.current.value = "";
-    descriptionRef.current.value = "";
-    categoryRef.current.value = "";
-  }else {
-    alert("Please fill all the required field to Submit ");
-  }
+      console.log("submit button clicked", data);
 
-   
+      axios
+        .post(
+          "https://trackerappauthentication-default-rtdb.firebaseio.com/items.json",
+          data
+        )
+        .then((response) => {
+          console.log(response);
+          dispatch(expenseActions.addExpense(data));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      setIsPrice(0); // this is used to enable  premium button i think
+      priceRef.current.value = "";
+      descriptionRef.current.value = "";
+      categoryRef.current.value = "";
+    } else {
+      alert("Please fill all the required field to Submit ");
+    }
   };
   const deleteBtnHandler = (id) => {
     axios
@@ -188,7 +199,9 @@ function WelcomePage() {
       .then((response) => {
         console.log("Expense updated successfully:", response.data);
         setItems((prevItems) =>
-          prevItems.map((iTemOfMap) => (iTemOfMap.id === item.id ? updatedItem : iTemOfMap))
+          prevItems.map((iTemOfMap) =>
+            iTemOfMap.id === item.id ? updatedItem : iTemOfMap
+          )
         );
       })
       .catch((error) => {
@@ -219,7 +232,7 @@ function WelcomePage() {
         },
       ];
       const filename = "items.csv";
-      const exportType = exportFromJSON.types.csv; // in the place of csv we can use anytype of file i think 
+      const exportType = exportFromJSON.types.csv; // in the place of csv we can use anytype of file i think
       exportFromJSON({ data, fileName: filename, exportType }); //this is the structure format to export our file to download
       submitBtnHandler();
     } else {
@@ -230,26 +243,28 @@ function WelcomePage() {
   return (
     <div className={themeClass}>
       <div className="container text-center d-flex flex-column align-items-center">
-        <div className="mt-2 d-flex">
-          <div className="mb-4">
-            Your Profile is Incomplete
-            <Link to="/profilepage" className="ms-2">
-              Complete Now
-            </Link>
+        <div>
+          <div className="mt-2 d-flex">
+            <div className="mb-4">
+              Your Profile is Incomplete
+              <Link to="/profilepage" className="ms-2">
+                Complete Now
+              </Link>
+            </div>
           </div>
-        </div>
-        <div className="mt-4 mb-4">
-          <button onClick={verifyEmail} className="btn btn-primary">
-            Verify Your Email
+          <div className="mt-4 mb-4">
+            <button onClick={verifyEmail} className="btn btn-primary">
+              Verify Your Email
+            </button>
+          </div>
+          {/* below button theme works because at the first div  i had use themeclass as a class name and that is the reason it is showing light mode and dark mode */}
+          <button className="btn btn-success" onClick={handleThemeButtonClick}>
+            {isButtonDisabled ? "Enable Dark Mode" : "Enable Light Mode"}
+          </button>
+          <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
+            Logout
           </button>
         </div>
-        {/* below button theme works because at the first div  i had use themeclass as a class name and that is the reason it is showing light mode and dark mode */}
-        <button className="btn btn-danger" onClick={handleThemeButtonClick}>
-          {isButtonDisabled ?  "Enable Dark Mode" : "Enable Light Mode" }
-        </button>
-        <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
-          Logout
-        </button>
 
         <div>
           <Form>

@@ -1,0 +1,15 @@
+.text-primary {
+    color: #007bff; /* Primary blue color */
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 2.5rem; /* Adjust font size as needed */
+    font-weight: bold; /* Make the text bold */
+    margin-top: 20px; /* Add some top margin for spacing */
+    margin-bottom: 20px; /* Add some bottom margin for spacing */
+  }
+  
