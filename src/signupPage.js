@@ -28,11 +28,9 @@ const SignUpPage = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      
     })
       .then((res) => {
         return res.json();
-  
       })
       .then((data) => {
         console.log(data); // this console. send data of the user to console who are newly signed up the page
@@ -42,21 +40,29 @@ const SignUpPage = () => {
         alert(err.error.message);
         console.log(err.error.message);
       });
-
-
   };
 
   return (
     <div className="container">
+      <div
+        className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+                
+              '
+      >
+        SachinSteps
+      </div>
       <div className="row justify-content-center">
         <div className="col-md-6">
           <div className="card mt-5">
             <div className="card-body">
-              <h3
-                id="heading"
-              
-                className="card-title text-center mb-4"
-              >
+              <h3 id="heading" className="card-title text-center mb-4">
                 Sign Up
               </h3>
               <form onSubmit={handleSubmit}>
@@ -65,7 +71,6 @@ const SignUpPage = () => {
                     Email
                   </label>
                   <input
-                 
                     type="email"
                     className="form-control"
                     value={email}
@@ -78,7 +83,6 @@ const SignUpPage = () => {
                     Password
                   </label>
                   <input
-                
                     type="password"
                     className="form-control"
                     value={password}
@@ -91,7 +95,6 @@ const SignUpPage = () => {
                     Confirm Password
                   </label>
                   <input
-                   
                     type="password"
                     className="form-control"
                     value={confirmPassword}
@@ -100,7 +103,6 @@ const SignUpPage = () => {
                   />
                 </div>
                 <button
-                  
                   value="SignUp"
                   type="submit"
                   className="btn btn-primary w-100"
@@ -110,14 +112,19 @@ const SignUpPage = () => {
               </form>
               <div className="mt-3 text-center">
                 <small>
-                  Already have an account? <Link to="/loginpage">Login Page</Link>
+                  Already have an account?{" "}
+                  <Link to="/loginpage">Login Page</Link>
                 </small>
               </div>
               <div className="mt-3 text-center">
-                  <small className="text-muted">
-                     Developed by : Sachin shekhar patel <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap"> GitHub</Link>
-                  </small>
-                </div>
+                <small className="text-muted">
+                  Developed by : Sachin shekhar patel{" "}
+                  <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap">
+                    {" "}
+                    GitHub
+                  </Link>
+                </small>
+              </div>
             </div>
           </div>
         </div>

@@ -71,9 +71,22 @@ const ProfilePage = () => {
                 variant"
                 text-success
                 badge
+                
               '
       >
-         
+        SachinSteps
+      </div>
+      <div
+        className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+              '
+      >
         <Link to="/welcomepage" className="ms-2">
           Go to HomePage
         </Link>

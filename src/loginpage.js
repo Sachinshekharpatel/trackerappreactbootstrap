@@ -69,6 +69,20 @@ const LoginPage = () => {
   return (
     <div>
       <div className="container">
+        <div
+          className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+                
+              '
+        >
+          SachinSteps
+        </div>
         <div className="row justify-content-center">
           <div className="col-md-6">
             <div className="card mt-5">
@@ -117,7 +131,11 @@ const LoginPage = () => {
                 </div>
                 <div className="mt-3 text-center">
                   <small className="text-muted">
-                     Developed by : Sachin shekhar patel   <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap"> GitHub</Link>
+                    Developed by : Sachin shekhar patel{" "}
+                    <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap">
+                      {" "}
+                      GitHub
+                    </Link>
                   </small>
                 </div>
               </div>

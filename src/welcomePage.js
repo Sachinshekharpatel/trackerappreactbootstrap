@@ -263,12 +263,8 @@ function WelcomePage() {
 
   return (
     <div className={themeClass}>
-      <div className="container text-center d-flex flex-column align-items-center">
-        <div>
-          <div className="mt-2 d-flex">
-            {name == "" && imageUrl == "" ? (
-              <div
-              className='
+      <div
+        className='
                 d-flex
                 justify-content-center
                 align-items-center
@@ -277,9 +273,25 @@ function WelcomePage() {
                 text-success
                 badge
               '
-            >
-              Profile Is Incomplete
-            
+      >
+        SachinSteps
+      </div>
+      <div className="container text-center d-flex flex-column align-items-center">
+        <div>
+          <div className="mt-2 d-flex">
+            {name == "" && imageUrl == "" ? (
+              <div
+                className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+              '
+              >
+                Profile Is Incomplete
                 <Link to="/profilepage" className="ms-2">
                   Complete Now
                 </Link>
@@ -299,7 +311,8 @@ function WelcomePage() {
                 >
                   Profile Is Completed
                 </div>
-                <div className='
+                <div
+                  className='
                     d-flex
                     justify-content-center
                     align-items-center
@@ -307,7 +320,8 @@ function WelcomePage() {
                     variant"
                     text-success
                     badge
-                  '>
+                  '
+                >
                   Edit your profile
                   <Link to="/profilepage" className="ms-2">
                     Edit
