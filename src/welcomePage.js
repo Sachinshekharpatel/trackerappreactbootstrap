@@ -37,7 +37,7 @@ function WelcomePage() {
   let email = localStorage.getItem("email");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const themeClass = darkTheme ? "bg-dark text-light" : "light-theme";
-  const [showVerificationModal, SetShowVerificationModal] = useState(false);
+
   //above themeclass this is the reason why after button click page goto dark mode and light mode
   const [name, setName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -65,8 +65,6 @@ function WelcomePage() {
     console.log(darkTheme);
   }, [isPrice, isButtonDisabled, darkTheme]);
 
-  const handleClose = () => SetShowVerificationModal(false);
-
   const handleThemeButtonClick = () => {
     setIsButtonDisabled(!isButtonDisabled); // i had write logic  for button will be disabled after click than ... i change it to dark mode to light mode
     dispatch(themeActions.toggleTheme());
@@ -78,7 +76,7 @@ function WelcomePage() {
     if (!token) {
       navigate("/loginpage");
     }
-  }, [token, showVerificationModal]);
+  }, [token]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -262,7 +260,18 @@ function WelcomePage() {
   };
 
   return (
-    <div className={themeClass}>
+    <div
+      style={{
+        backgroundImage: `
+        linear-gradient(112.5deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
+        linear-gradient(157.5deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
+        linear-gradient(135deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
+        linear-gradient(90deg, rgb(195, 195, 195), rgb(228, 228, 228))
+      `,
+        backgroundBlendMode: "overlay, overlay, overlay, normal",
+      }}
+      className={themeClass}
+    >
       <div
         className='
                 d-flex

@@ -67,7 +67,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
+    <div >
       <div className="container">
         <div
           className='
@@ -77,8 +77,7 @@ const LoginPage = () => {
                 text-center
                 variant"
                 text-success
-                badge
-                
+                badge         
               '
         >
           SachinSteps
