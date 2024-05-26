@@ -54,8 +54,8 @@ const LoginPage = () => {
       })
       .then((data) => {
         dispatch(authActions.login());
-        localStorage.setItem("email", email);
-        localStorage.setItem("token", data.idToken);
+        localStorage.setItem("emailSachinSteps", email);
+        localStorage.setItem("tokenSachinSteps", data.idToken);
         if (loginStatus) {
           console.log(data);
           navigate("/welcomepage");

@@ -16,7 +16,7 @@ import { themeActions } from "./authreducerredux";
 function WelcomePage() {
   const darkTheme = useSelector((state) => state.theme.darkMode);
   const dispatch = useDispatch();
-  const itemArrayReducer = useSelector((state) => state.expenses.expenseItems);
+
   const loginStatus = useSelector(
     (state) => state.authentication.isAuthenticated
   );
@@ -34,7 +34,7 @@ function WelcomePage() {
   const [items, setItems] = useState([]);
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
-  let email = localStorage.getItem("email");
+  let email = localStorage.getItem("emailSachinSteps");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const themeClass = darkTheme ? "bg-dark text-light" : "light-theme";
 
@@ -43,7 +43,7 @@ function WelcomePage() {
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("tokenSachinSteps");
 
     axios
       .post(
@@ -51,8 +51,9 @@ function WelcomePage() {
         { idToken: token }
       )
       .then((response) => {
-        console.log(response);
+        console.log(response.user);
         const user = response.data.users[0]; // only one user is returned there is some reason i had put this
+
         setName(user.displayName || "");
         setImageUrl(user.photoUrl || "");
       })
@@ -70,7 +71,7 @@ function WelcomePage() {
     dispatch(themeActions.toggleTheme());
   };
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("tokenSachinSteps");
 
   useEffect(() => {
     if (!token) {
@@ -82,7 +83,7 @@ function WelcomePage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "https://trackerappauthentication-default-rtdb.firebaseio.com/items.json"
+          "https://sachinstepsdatabase-default-rtdb.firebaseio.com/items.json"
         );
         const dataObj = response.data;
         console.log(dataObj);
@@ -105,7 +106,7 @@ function WelcomePage() {
     fetchData();
   }, [loginStatus, email]);
   const verifyEmail = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("tokenSachinSteps");
 
     if (!token) {
       console.error("No token found");
@@ -140,8 +141,8 @@ function WelcomePage() {
     console.log("logout button clicked");
     dispatch(authActions.logout());
     if (loginStatus || token) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("email");
+      localStorage.removeItem("tokenSachinSteps");
+      localStorage.removeItem("emailSachinSteps");
       navigate("/loginpage");
       email = "";
     }
@@ -163,10 +164,10 @@ function WelcomePage() {
       setItems((prevItems) => [...prevItems, data]);
 
       console.log("submit button clicked", data);
-
+      const token = localStorage.getItem("tokenSachinSteps");
       axios
         .post(
-          "https://trackerappauthentication-default-rtdb.firebaseio.com/items.json",
+          "https://sachinstepsdatabase-default-rtdb.firebaseio.com/items.json",
           data
         )
         .then((response) => {
@@ -187,7 +188,7 @@ function WelcomePage() {
   const deleteBtnHandler = (id) => {
     axios
       .delete(
-        `https://trackerappauthentication-default-rtdb.firebaseio.com/items/${id}.json`
+        `https://sachinstepsdatabase-default-rtdb.firebaseio.com/items/${id}.json`
       )
       .then((response) => {
         console.log("Expense deleted successfully:", response.data);
@@ -212,7 +213,7 @@ function WelcomePage() {
 
     axios
       .put(
-        `https://trackerappauthentication-default-rtdb.firebaseio.com/items/${item.id}.json`,
+        `https://sachinstepsdatabase-default-rtdb.firebaseio.com/items/${item.id}.json`,
         updatedItem
       )
       .then((response) => {
@@ -260,20 +261,22 @@ function WelcomePage() {
   };
 
   return (
-    <div
-      style={{
-        backgroundImage: `
-        linear-gradient(112.5deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
-        linear-gradient(157.5deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
-        linear-gradient(135deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
-        linear-gradient(90deg, rgb(195, 195, 195), rgb(228, 228, 228))
-      `,
-        backgroundBlendMode: "overlay, overlay, overlay, normal",
-      }}
-      className={themeClass}
-    >
-      <div
-        className='
+    <div>
+      {!darkTheme && (
+        <div
+          style={{
+            backgroundImage: `
+          linear-gradient(112.5deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
+          linear-gradient(157.5deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
+          linear-gradient(135deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%, rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%, rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%, rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%, rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%, rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%, rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),
+          linear-gradient(90deg, rgb(195, 195, 195), rgb(228, 228, 228))
+        `,
+            backgroundBlendMode: "overlay, overlay, overlay, normal",
+          }}
+          className={themeClass}
+        >
+          <div
+            className='
                 d-flex
                 justify-content-center
                 align-items-center
@@ -282,245 +285,520 @@ function WelcomePage() {
                 text-success
                 badge
               '
-      >
-        SachinSteps
-      </div>
-      <div className="container text-center d-flex flex-column align-items-center">
-        <div>
-          <div className="mt-2 d-flex">
-            {name == "" && imageUrl == "" ? (
-              <div
-                className='
-                d-flex
-                justify-content-center
-                align-items-center
-                text-center
-                variant"
-                text-success
-                badge
-              '
-              >
-                Profile Is Incomplete
-                <Link to="/profilepage" className="ms-2">
-                  Complete Now
-                </Link>
-              </div>
-            ) : (
-              <div className="badge-container">
-                <div
-                  className='
-                    d-flex
-                    justify-content-center
-                    align-items-center
-                    text-center
-                    variant"
-                    text-success
-                    badge
-                  '
-                >
-                  Profile Is Completed
-                </div>
-                <div
-                  className='
-                    d-flex
-                    justify-content-center
-                    align-items-center
-                    text-center
-                    variant"
-                    text-success
-                    badge
-                  '
-                >
-                  Edit your profile
-                  <Link to="/profilepage" className="ms-2">
-                    Edit
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="mt-4 mb-4">
-            <button onClick={verifyEmail} className="btn btn-primary">
-              Verify Your Email
-            </button>
-          </div>
-          {/* below button theme works because at the first div  i had use themeclass as a class name and that is the reason it is showing light mode and dark mode */}
-          <button className="btn btn-success" onClick={handleThemeButtonClick}>
-            {isButtonDisabled ? "Enable Dark Mode" : "Enable Light Mode"}
-          </button>
-          <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
-            Logout
-          </button>
-        </div>
-
-        <div>
-          <Form>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Price </Form.Label>
-              <Form.Control
-                required
-                ref={priceRef}
-                onChange={() => setIsPrice(priceRef.current.value)}
-                type="number"
-                placeholder="Enter Price"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                required
-                ref={descriptionRef}
-                type="text"
-                placeholder="Description"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Category</Form.Label>
-              <Form.Control
-                required
-                ref={categoryRef}
-                as="select"
-                defaultValue=""
-              >
-                <option value=""></option>
-                <option value="Food">Food</option>
-                <option value="Movie">Movie</option>
-                <option value="Travel">Travel</option>
-              </Form.Control>
-            </Form.Group>
-          </Form>
-          <Button className="mb-3" variant="primary" onClick={submitBtnHandler}>
-            Submit
-          </Button>
-          <Button
-            className="mb-3 btn btn-btn btn-success"
-            onClick={downloadBtnHandler}
           >
-            Download Invoice
-          </Button>
-          {isPrice > 9999 && (
-            <Button className="mb-3" variant="success" type="submit">
-              Activate Premium
-            </Button>
-          )}
-          <div>
-            {modal && (
-              <div
-                className="modal show"
-                style={{ display: "block", position: "initial" }}
-              >
-                <Modal.Dialog>
-                  <Modal.Header onClick={() => setModal(false)} closeButton>
-                    <Modal.Title>Modal title</Modal.Title>
-                  </Modal.Header>
-
-                  <Modal.Body>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Price</Form.Label>
-                      <Form.Control
-                        type="number"
-                        placeholder="Enter Price"
-                        value={editPrice}
-                        ref={editPriceRef}
-                        onChange={(e) => setEditPrice(e.target.value)}
-                        required
-                      />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3">
-                      <Form.Label>Description</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={3}
-                        value={editDescription}
-                        placeholder="Enter Description"
-                        ref={editDescriptionRef}
-                        onChange={(e) => setEditDescription(e.target.value)}
-                        required
-                      />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Category</Form.Label>
-                      <Form.Select
-                        required
-                        ref={editCategoryRef}
-                        onChange={(e) => setEditCategory(e.target.value)}
-                      >
-                        <option value={editCategory} disabled>
-                          Select a category
-                        </option>
-                        <option value="Food">Food</option>
-                        <option value="Movie">Movie</option>
-                        <option value="Travel">Travel</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Modal.Body>
-
-                  <Modal.Footer>
-                    <Button onClick={() => setModal(false)} variant="secondary">
-                      Close
-                    </Button>
-                    <Button
-                      onClick={() => saveChangesHandler(itemToEdit)}
-                      variant="primary"
-                    >
-                      Save changes
-                    </Button>
-                  </Modal.Footer>
-                </Modal.Dialog>
-              </div>
-            )}
+            SachinSteps
           </div>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>.</th>
-                <th>Description</th>
-                <th>Price Name</th>
-                <th>category</th>
-                <th>Delete</th>
-                <th>Edit </th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item, i) => (
-                <tr key={item.key}>
-                  <td>{i + 1}</td>
-                  <td>{item.description}</td>
-                  <td>{item.price}</td>
-                  <td>{item.category}</td>
-                  <td>
-                    <Button
-                      onClick={() => deleteBtnHandler(item.id)}
-                      variant="danger"
+          <div className="container text-center d-flex flex-column align-items-center">
+            <div>
+              <div className="mt-2 d-flex">
+                {name == "" && imageUrl == "" ? (
+                  <div
+                    className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+              '
+                  >
+                    Profile Is Incomplete
+                    <Link to="/profilepage" className="ms-2">
+                      Complete Now
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="badge-container">
+                    <div
+                      className='
+                    d-flex
+                    justify-content-center
+                    align-items-center
+                    text-center
+                    variant"
+                    text-success
+                    badge
+                  '
                     >
-                      Delete
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      onClick={() => editBtnhandler(item, item.id)}
-                      variant="primary"
+                      Profile Is Completed
+                    </div>
+                    <div
+                      className='
+                    d-flex
+                    justify-content-center
+                    align-items-center
+                    text-center
+                    variant"
+                    text-success
+                    badge
+                  '
                     >
-                      Edit
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                      Edit your profile
+                      <Link to="/profilepage" className="ms-2">
+                        Edit
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="mt-4 mb-4">
+                <button onClick={verifyEmail} className="btn btn-primary">
+                  Verify Your Email
+                </button>
+              </div>
+              {/* below button theme works because at the first div  i had use themeclass as a class name and that is the reason it is showing light mode and dark mode */}
+              <button
+                className="btn btn-success"
+                onClick={handleThemeButtonClick}
+              >
+                {isButtonDisabled ? "Enable Dark Mode" : "Enable Light Mode"}
+              </button>
+              <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
+                Logout
+              </button>
+            </div>
+
+            <div>
+              <Form>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label>Price </Form.Label>
+                  <Form.Control
+                    required
+                    ref={priceRef}
+                    onChange={() => setIsPrice(priceRef.current.value)}
+                    type="number"
+                    placeholder="Enter Price"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    required
+                    ref={descriptionRef}
+                    type="text"
+                    placeholder="Description"
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Category</Form.Label>
+                  <Form.Control
+                    required
+                    ref={categoryRef}
+                    as="select"
+                    defaultValue=""
+                  >
+                    <option value="">Choose Category</option>
+                    <option value="Food">Food</option>
+                    <option value="Movie">Movie</option>
+                    <option value="Travel">Travel</option>
+                  </Form.Control>
+                </Form.Group>
+              </Form>
+              <Button
+                className="mb-3"
+                variant="primary"
+                onClick={submitBtnHandler}
+              >
+                Submit
+              </Button>
+              <Button
+                className="mb-3 btn btn-btn btn-success"
+                onClick={downloadBtnHandler}
+              >
+                Download Invoice
+              </Button>
+              {isPrice > 9999 && (
+                <Button className="mb-3" variant="success" type="submit">
+                  Activate Premium
+                </Button>
+              )}
+              <div>
+                {modal && (
+                  <div
+                    className="modal show"
+                    style={{ display: "block", position: "initial" }}
+                  >
+                    <Modal.Dialog>
+                      <Modal.Header onClick={() => setModal(false)} closeButton>
+                        <Modal.Title>Modal title</Modal.Title>
+                      </Modal.Header>
+
+                      <Modal.Body>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Price</Form.Label>
+                          <Form.Control
+                            type="number"
+                            placeholder="Enter Price"
+                            value={editPrice}
+                            ref={editPriceRef}
+                            onChange={(e) => setEditPrice(e.target.value)}
+                            required
+                          />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                          <Form.Label>Description</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={3}
+                            value={editDescription}
+                            placeholder="Enter Description"
+                            ref={editDescriptionRef}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            required
+                          />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Category</Form.Label>
+                          <Form.Select
+                            required
+                            ref={editCategoryRef}
+                            onChange={(e) => setEditCategory(e.target.value)}
+                          >
+                            <option value={editCategory} disabled>
+                              Select a category
+                            </option>
+                            <option value="Food">Food</option>
+                            <option value="Movie">Movie</option>
+                            <option value="Travel">Travel</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Modal.Body>
+
+                      <Modal.Footer>
+                        <Button
+                          onClick={() => setModal(false)}
+                          variant="secondary"
+                        >
+                          Close
+                        </Button>
+                        <Button
+                          onClick={() => saveChangesHandler(itemToEdit)}
+                          variant="primary"
+                        >
+                          Save changes
+                        </Button>
+                      </Modal.Footer>
+                    </Modal.Dialog>
+                  </div>
+                )}
+              </div>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>.</th>
+                    <th>Description</th>
+                    <th>Price Name</th>
+                    <th>category</th>
+                    <th>Delete</th>
+                    <th>Edit </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item, i) => (
+                    <tr key={item.key}>
+                      <td>{i + 1}</td>
+                      <td>{item.description}</td>
+                      <td>{item.price}</td>
+                      <td>{item.category}</td>
+                      <td>
+                        <Button
+                          onClick={() => deleteBtnHandler(item.id)}
+                          variant="danger"
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                      <td>
+                        <Button
+                          onClick={() => editBtnhandler(item, item.id)}
+                          variant="primary"
+                        >
+                          Edit
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </div>
+          <div className="mt-3 text-center">
+            <small className="text-muted">
+              Developed by : Sachin shekhar patel
+              <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap">
+                {" "}
+                GitHub
+              </Link>
+            </small>
+          </div>
         </div>
-      </div>
-      <div className="mt-3 text-center">
-        <small className="text-muted">
-          Developed by : Sachin shekhar patel
-          <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap">
-            {" "}
-            GitHub
-          </Link>
-        </small>
-      </div>
+      )}
+      {darkTheme && (
+        <div className={themeClass}>
+          <div
+            className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+              '
+          >
+            SachinSteps
+          </div>
+          <div className="container text-center d-flex flex-column align-items-center">
+            <div>
+              <div className="mt-2 d-flex">
+                {name == "" && imageUrl == "" ? (
+                  <div
+                    className='
+                d-flex
+                justify-content-center
+                align-items-center
+                text-center
+                variant"
+                text-success
+                badge
+              '
+                  >
+                    Profile Is Incomplete
+                    <Link to="/profilepage" className="ms-2">
+                      Complete Now
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="badge-container">
+                    <div
+                      className='
+                    d-flex
+                    justify-content-center
+                    align-items-center
+                    text-center
+                    variant"
+                    text-success
+                    badge
+                  '
+                    >
+                      Profile Is Completed
+                    </div>
+                    <div
+                      className='
+                    d-flex
+                    justify-content-center
+                    align-items-center
+                    text-center
+                    variant"
+                    text-success
+                    badge
+                  '
+                    >
+                      Edit your profile
+                      <Link to="/profilepage" className="ms-2">
+                        Edit
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="mt-4 mb-4">
+                <button onClick={verifyEmail} className="btn btn-primary">
+                  Verify Your Email
+                </button>
+              </div>
+              {/* below button theme works because at the first div  i had use themeclass as a class name and that is the reason it is showing light mode and dark mode */}
+              <button
+                className="btn btn-success"
+                onClick={handleThemeButtonClick}
+              >
+                {isButtonDisabled ? "Enable Dark Mode" : "Enable Light Mode"}
+              </button>
+              <button onClick={logoutUser} className="btn btn-danger mt-3 mb-3">
+                Logout
+              </button>
+            </div>
+
+            <div>
+              <Form>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label>Price </Form.Label>
+                  <Form.Control
+                    required
+                    ref={priceRef}
+                    onChange={() => setIsPrice(priceRef.current.value)}
+                    type="number"
+                    placeholder="Enter Price"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    required
+                    ref={descriptionRef}
+                    type="text"
+                    placeholder="Description"
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Category</Form.Label>
+                  <Form.Control
+                    required
+                    ref={categoryRef}
+                    as="select"
+                    defaultValue=""
+                  >
+                    <option value="">Choose Category</option>
+                    <option value="Food">Food</option>
+                    <option value="Movie">Movie</option>
+                    <option value="Travel">Travel</option>
+                  </Form.Control>
+                </Form.Group>
+              </Form>
+              <Button
+                className="mb-3"
+                variant="primary"
+                onClick={submitBtnHandler}
+              >
+                Submit
+              </Button>
+              <Button
+                className="mb-3 btn btn-btn btn-success"
+                onClick={downloadBtnHandler}
+              >
+                Download Invoice
+              </Button>
+              {isPrice > 9999 && (
+                <Button className="mb-3" variant="success" type="submit">
+                  Activate Premium
+                </Button>
+              )}
+              <div>
+                {modal && (
+                  <div
+                    className="modal show"
+                    style={{ display: "block", position: "initial" }}
+                  >
+                    <Modal.Dialog>
+                      <Modal.Header onClick={() => setModal(false)} closeButton>
+                        <Modal.Title>Modal title</Modal.Title>
+                      </Modal.Header>
+
+                      <Modal.Body>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Price</Form.Label>
+                          <Form.Control
+                            type="number"
+                            placeholder="Enter Price"
+                            value={editPrice}
+                            ref={editPriceRef}
+                            onChange={(e) => setEditPrice(e.target.value)}
+                            required
+                          />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                          <Form.Label>Description</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={3}
+                            value={editDescription}
+                            placeholder="Enter Description"
+                            ref={editDescriptionRef}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            required
+                          />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Category</Form.Label>
+                          <Form.Select
+                            required
+                            ref={editCategoryRef}
+                            onChange={(e) => setEditCategory(e.target.value)}
+                          >
+                            <option value={editCategory} disabled>
+                              Select a category
+                            </option>
+                            <option value="Food">Food</option>
+                            <option value="Movie">Movie</option>
+                            <option value="Travel">Travel</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Modal.Body>
+
+                      <Modal.Footer>
+                        <Button
+                          onClick={() => setModal(false)}
+                          variant="secondary"
+                        >
+                          Close
+                        </Button>
+                        <Button
+                          onClick={() => saveChangesHandler(itemToEdit)}
+                          variant="primary"
+                        >
+                          Save changes
+                        </Button>
+                      </Modal.Footer>
+                    </Modal.Dialog>
+                  </div>
+                )}
+              </div>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>.</th>
+                    <th>Description</th>
+                    <th>Price Name</th>
+                    <th>category</th>
+                    <th>Delete</th>
+                    <th>Edit </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item, i) => (
+                    <tr key={item.key}>
+                      <td>{i + 1}</td>
+                      <td>{item.description}</td>
+                      <td>{item.price}</td>
+                      <td>{item.category}</td>
+                      <td>
+                        <Button
+                          onClick={() => deleteBtnHandler(item.id)}
+                          variant="danger"
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                      <td>
+                        <Button
+                          onClick={() => editBtnhandler(item, item.id)}
+                          variant="primary"
+                        >
+                          Edit
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </div>
+          <div className="mt-3 text-center">
+            <small className="text-muted">
+              Developed by : Sachin shekhar patel
+              <Link to="https://github.com/Sachinshekharpatel/trackerappreactbootstrap">
+                {" "}
+                GitHub
+              </Link>
+            </small>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

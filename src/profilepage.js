@@ -6,7 +6,7 @@ const ProfilePage = () => {
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("tokenSachinSteps");
 
     axios
       .post(
